@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"> 
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>图片管理</title>
+	<link rel="stylesheet" href="static/css/style.css">
+	<link rel="stylesheet" href="static/js/page/custom-pagination.min.css" /><!-- 1分页.引入css -->
+</head>
+<body>
+
+		<header class="header">
+			<h1>图片管理 </h1>
+			<p><a th:href="${upfile}">返回上传图片</a></p>
+			<p><a th:href="${index}">返回首页</a></p>
+		</header>
+		<div class="wrapper">
+		  <div class="cols" id="cols">
+<!-- 					<div class="col" ontouchstart="this.classList.toggle('hover');">
+						<div class="container">
+							<div class="front" style="background-image: url(http://127.0.0.1:8080/upfile/2020/08/15/809f53ea2f6b9588cdb3435202bd26d7.jpg)">
+								<div class="inner">
+									<p>id</p>
+		              <span>时间</span>
+								</div>
+							</div>
+							<div class="back">
+								<div class="inner">
+								  <p>备注</p>
+								</div>
+							</div>
+						</div>
+					</div> -->
+			</div>
+				
+				<div id="page" class="page"></div><!-- 2.创建一个页码容器，设定宽度  分页.引入 -->
+
+		 </div>
+  <script type="text/javascript" src="static/js/jquery-1.9.1.min.js"></script>
+  <script type="text/javascript" src="static/js/page/custom-pagination.min.js"></script><!-- 3.引入js  分页.引入-->		   
+  <script th:inline="javascript"> <!--这句是重点-->
+    var path = [[${path}]]; <!--接收值-->   
+    console.log(path);
+  //格式化日期---毫秒转日期：yyyy-MM-dd
+    function formatDate(dates) {
+    	if(dates == null){
+    		return '';
+    	}
+    	var date = new Date(dates);
+    	var myyear = date.getFullYear();
+    	var mymonth = date.getMonth() + 1;
+    	var myweekday = date.getDate();
+
+    	if (mymonth < 10) {
+    		mymonth = "0" + mymonth;
+    	}
+    	if (myweekday < 10) {
+    		myweekday = "0" + myweekday;
+    	}
+    	return (myyear + "-" + mymonth + "-" + myweekday);
+    }
+  </script>
+<script type="text/javascript" th:inline="none">
+var pages = 0;
+var list;
+var url;
+$(function(){
+	$.ajax({
+	    url: "/file/selectFile",    //请求的url地址
+	    dataType:"json",   //返回格式为json
+	    data:{
+	    	"pageNum":"1",
+	    	"pageSize":"8"
+	    },    //参数值
+	    type:"post",   //请求方式
+	    success:function(data){    	
+	    	pages=data.pages;
+	    	// 4.调用插件
+	    	var box = new CustomPagination('#page', {
+	    	  total: pages,//总页数
+	    	  changePage: function (pageNum) {//切换页码成功回调
+	    	    console.log('当前页码：'+pageNum)
+	    	    
+	    	    $.ajax({
+	    		    url: "/file/selectFile",    //请求的url地址
+	    		    dataType:"json",   //返回格式为json
+	    		    data:{
+	    		    	"pageNum":pageNum,
+	    		    	"pageSize":"8"
+	    		    },    //参数值
+	    		    type:"post",   //请求方式
+	    		    success:function(datas){
+	    		    	console.log(datas.rows);
+	    		    	var s='';
+	    		    	for(var i=0;i<datas.rows.length;i++){
+	    		    		url = datas.rows[i].fileurl
+	    		    		s+='<div class="col" ontouchstart="this.classList.toggle("'+"hover"+'");">'+
+								'<div class="container">'+
+								'<div class="front" style="background-image: url('+datas.rows[i].fileurl+')">'+
+									'<div class="inner">'+
+										'<p>'+datas.rows[i].id+'</p>'+
+			                     '<span>'+formatDate(datas.rows[i].createtime)+'</span>'+
+									'</div>'+
+								'</div>'+
+								'<div class="back">'+
+									'<div class="inner">'+
+									  '<p onclick="myFunction(\''+url+'\')">'+datas.rows[i].remark+'</br>点击复制图片链接</p>'+
+									'</div>'+
+								'</div>'+
+							   '</div>'+
+						       '</div>';
+	    		    	}
+	    		    	document.getElementById("cols").innerHTML=s
+	    		    	
+	    		    },
+	    		    error:function(){
+	    		        //请求出错处理
+	    		    }
+	    		    
+	    	    });
+	    	    
+	    	    
+	    	  }
+	    	});
+	    },
+	    error:function(){
+	        //请求出错处理
+	    }
+	});
+});
+function myFunction(s){
+	confirm('<a href="'+s+'"><img src="'+s+'" alt="dkoWyd.png" border="0" /></a>');
+};
+</script>
+
+</body>
+</html>

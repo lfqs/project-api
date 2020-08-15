@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lfq.api.mapper.ApiFileMapper">
+
+    <resultMap type="ApiFile" id="ApiFileResult">
+        <id property="id" column="id"/>
+        <result property="fileurl" column="fileurl"/>
+        <result property="remark" column="remark"/>
+        <result property="createtime" column="createtime"/>
+        <result property="updatetime" column="updatetime"/>
+    </resultMap>
+    
+    <sql id="ApiFileVo">
+    SELECT id,fileurl,remark,createtime,updatetime FROM api_file
+    </sql>
+    
+    <select id="selectList" parameterType="ApiFile" resultMap="ApiFileResult">
+    <include refid="ApiFileVo"/>
+    </select>
+
+	<insert id="insert" parameterType="ApiFile">
+		INSERT INTO  api_file(
+	    id,fileurl,remark,createtime,updatetime
+	    )VALUES (
+	      #{id},
+	      #{fileurl},
+	      #{remark},
+	      #{createtime},
+	      #{updatetime}
+	    )
+	</insert>
+
+
+</mapper>        

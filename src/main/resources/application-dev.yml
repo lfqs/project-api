@@ -1,0 +1,14 @@
+# 开发环境配置文件
+server:
+  port: 8080     # Springboot占用端口
+
+spring:
+  datasource:
+    druid:
+      driver-class-name: com.mysql.cj.jdbc.Driver     # 数据库驱动
+      url: jdbc:mysql://47.102.223.175:3306/testapi?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=true&serverTimezone=GMT%2B8
+      username: root
+      password: Root@6622.
+  devtools:
+    restart:
+      enabled: true     # 开启热更新

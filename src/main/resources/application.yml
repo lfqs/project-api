@@ -1,0 +1,67 @@
+# 项目相关配置
+lfq:
+  # 项目名称地址
+  #name: 127.0.0.1:8080
+  name: 47.102.223.175:8080
+  # 版本
+  version: 1.0.0
+  # 版权年份
+  copyrightYear: 2020
+  # 文件路径
+  #profile: D:/profile/upload/
+  profile: /root/jar/imgs/  
+  # 获取ip地址开关
+  addressEnabled: true
+  
+# 基础配置文件
+spring:
+  profiles:
+    active: dev     # 配置文件环境
+  http:
+    encoding:
+      force: true
+      charset: utf-8
+      enabled: true
+      
+  mvc:
+    throw-exception-if-no-handler-found: true     # 接口404时抛出异常
+    
+  resources:
+    add-mappings: false
+    
+      # 模板引擎
+  thymeleaf:
+    #thymeleaf 所在路径
+    prefix: classpath:/templates/
+    #thymeleaf 后缀
+    suffix: .html
+    #thymeleaf 采用的标准
+    mode: HTML5
+    #thymeleaf 编码格式
+    encoding: UTF-8
+    servlet:
+      content-type: text/html; charset=utf-8
+    check-template-location: true
+         # 禁用缓存
+    cache: false
+    
+server:
+  servlet:
+    context-path: /     # 应用路径，可以通过设置路径来控制版本
+  tomcat:
+    uri-encoding: UTF-8
+
+mybatis:
+  # 搜索指定包别名
+  typeAliasesPackage: com.lfq.api
+  # 配置mapper的扫描，找到所有的mapper.xml映射文件
+  mapperLocations: classpath:mybatis/**/*Mapper.xml
+  # 加载全局的配置文件
+  configLocation: classpath:mybatis/mybatis-config.xml
+
+# PageHelper分页插件
+pagehelper:
+  helperDialect: mysql
+  reasonable: true
+  supportMethodsArguments: true
+  params: count=countSql

@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>上传图片</title>
+<link rel="stylesheet" href="static/css/bootstrap.min.css">
+<link rel="stylesheet" href="static/css/fileinput.min.css">
+<link rel="stylesheet" href="static/css/theme.min.css">
+<link rel="stylesheet" href="static/js/page/custom-pagination.min.css" /><!-- 1分页.引入css -->
+</head>
+<body>
+		<header class="header">
+			<center><h1>上传图片</h1></center>
+			<center><a th:href="${fileIndex}">返回图片管理</a></center>
+		</header>
+<input id="f_upload" name="ufile" type="file" class="file-loading" />
+
+ <div style="margin: 50px;">
+ <center><h1>已上传的图片</h1></center>
+	<div class="row" id="cols">
+	
+	</div>
+	<div id="page" class="page"></div><!-- 2.创建一个页码容器，设定宽度  分页.引入 -->
+</div>
+<script type="text/javascript" src="static/js/jquery-1.9.1.min.js"></script>
+<script type="text/javascript" src="static/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="static/js/fileinput.min.js"></script>
+<script type="text/javascript" src="static/js/zh.js"></script>
+<script type="text/javascript" src="static/js/theme.min.js"></script>
+<script type="text/javascript" src="static/js/utils.js"></script>
+<script type="text/javascript" src="static/js/page/custom-pagination.min.js"></script><!-- 3.引入js  分页.引入-->		
+<script type="text/javascript">
+var pages = 0;
+var list;
+var url;
+$(function(){
+	lfq();
+	$("#f_upload").fileinput({
+		    language: 'zh', //设置语言
+	        uploadUrl: "/file/updateFile", //上传的地址
+	        allowedFileExtensions: ['jpg', 'gif', 'png'],//接收的文件后缀
+		 });
+	$("#f_upload").on('fileuploaded', function(event, data, previewId, index) {//异步上传成功结果处理
+		console.log(data);
+		lfq();
+	});
+
+	$("#f_upload").on('fileerror', function(event, data, msg) {//异步上传失败结果处理
+		lfq();
+	});
+	
+});
+function lfq(){
+	$.ajax({
+	    url: "/file/selectFile",    //请求的url地址
+	    dataType:"json",   //返回格式为json
+	    data:{
+	    	"pageNum":"1",
+	    	"pageSize":"4",
+	    	"orderByColumn":'createtime',
+	    	"isAsc":"desc"
+	    },    //参数值
+	    type:"post",   //请求方式
+	    success:function(data){   
+	    	pages=data.pages;
+	    	var box = new CustomPagination('#page', {
+	    		total: pages,//总页数
+	      	  changePage: function (pageNum) {//切换页码成功回调
+	      	    console.log('当前页码：'+pageNum)
+	      	    
+	    	    $.ajax({
+	    		    url: "/file/selectFile",    //请求的url地址
+	    		    dataType:"json",   //返回格式为json
+	    		    data:{
+	    		    	"pageNum":pageNum,
+	    		    	"pageSize":"4",
+	    		    	"orderByColumn":'createtime',
+	    		    	"isAsc":"desc"
+	    		    },    //参数值
+	    		    type:"post",   //请求方式
+	    		    success:function(datas){
+	    		    	console.log(datas.rows);
+	    		    	var s='';
+	    		    	for(var i=0;i<datas.rows.length;i++){
+	    		    		url = datas.rows[i].fileurl
+	    		    		s+='<div class="col-sm-6 col-md-3">'+
+	    		    	        '<a href="#" class="thumbnail">'+
+	    		                '<img style="width: 100%; height: 100%; max-height: 150px; min-height: 150px" src="'+url+'" alt="通用的占位符缩略图">'+
+	    		                '</a>'+
+	    		                '</div>';
+	    		    	}
+	    		    	document.getElementById("cols").innerHTML=s
+	    		    	
+	    		    },
+	    		    error:function(){
+	    		        //请求出错处理
+	    		    }
+	    		    
+	    	    });
+	      	    
+	      	  }
+	    	});
+	    }
+	});
+}
+
+</script>
+</body>
+</html>
