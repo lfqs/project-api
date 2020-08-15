@@ -1,3 +1,5 @@
 说明：
 linux系统上运行jar
 nohup java -jar shareniu.jar >temp.txt &  是将jar的输出重定向到temp.txt文件，即输出内容不打印到屏幕上，而是输出到temp.txt文件中。
+
+作为一个图床来使用。具体请下载源码
